@@ -32,11 +32,11 @@ ggplot(isds, aes(wgt, color = as.factor(year))) +
   geom_density() 
 
 isds_overlap <- pair_overlap(list(sp1 = year1isd$wgt, sp2 = year2isd$wgt))
-
-many_qn <- replicate(100, expr = qn(year1, year2), simplify = F) %>% bind_rows(.id = "sim")
-
-ggplot(many_qn, aes(species, propabund)) +
-  geom_point() 
+# 
+# many_qn <- replicate(100, expr = qn(year1, year2), simplify = F) %>% bind_rows(.id = "sim")
+# 
+# ggplot(many_qn, aes(species, propabund)) +
+#   geom_point() 
 
 qn_over_time <- list()
 
@@ -46,8 +46,8 @@ qn_over_time[[1]] <- year1 #%>%
   # mutate(propabund =abund/totalabund)
 
 
-for(i in 2:100) {
-  qn_over_time[[i]] <- qn(start = qn_over_time[[i - 1]], birth_rate = .3, death_rate = .4, imm_rate = .05)
+for(i in 2:10) {
+  qn_over_time[[i]] <- qn(start = qn_over_time[[i - 1]], birth_rate = .7, death_rate = .7, imm_rate = .1)
 }
 
 qn_over_time <- bind_rows(qn_over_time, .id = "tstep") %>%
@@ -59,14 +59,10 @@ ggplot(filter(qn_over_time, tstep == 10), aes(species, propabund)) +
   facet_wrap(vars(tstep))
 
 
-ggplot(filter(actuals_over_time, tstep == 10), aes(species, propabund)) +
-  geom_point() +
-  facet_wrap(vars(tstep))
-
 
 actuals_over_time <- list()
 
-for(i in c(1:20)) {
+for(i in c(1:5)) {
   actuals_over_time[[i]] <- filter(annual_counts, censusyear == 1993 + i)
 }
 
@@ -74,7 +70,7 @@ qn_over_time_actuals <- list()
 
 qn_over_time_actuals[[1]] <- actuals_over_time[[1]]
 
-for(i in 2:20) {
+for(i in 2:5) {
   qn_over_time_actuals[[i]] <- qn(start = qn_over_time_actuals[[i-1]], t1 = actuals_over_time[[i - 1]], t2 = actuals_over_time[[i]])
 }
 
@@ -87,7 +83,7 @@ actuals_over_time <- bind_rows(actuals_over_time, .id = "tstep") %>%
 
 
 
-ggplot(qn_over_time_actuals, aes(species, propabund)) +
+ggplot(qn_over_time_actuals, aes(species,propabund)) +
   geom_point() +facet_wrap(vars(tstep)) 
 
 ggplot(actuals_over_time, aes(species, propabund)) +

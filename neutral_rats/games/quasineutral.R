@@ -23,11 +23,7 @@ qn <- function(start, t1 = NULL, t2 = NULL, birth_rate = NULL, death_rate = NULL
   
   deaths = rmultinom(1, size = ndeaths, prob = start$abund)
   
-  newabund = start$abund - deaths
-  
-  newabund [ newabund < 0] <- 0
-  
-  births = rmultinom(1, size = nbirths, prob = newabund)
+  births = rmultinom(1, size = nbirths, prob = (start$propabund >= 0) / sum(start$propabund >= 0))
   
   
   

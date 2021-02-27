@@ -40,6 +40,7 @@ draw_individuals <- function(input_vect = NULL, species_name = NULL, nind = NULL
   
   return(data.frame(
     species = species_name,
-    wgt = inds
+    wgt = inds,
+    logwgt = log(inds)
   ))
 }
