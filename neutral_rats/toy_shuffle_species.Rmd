@@ -84,6 +84,18 @@ for(i in 1:length(unique(all_isds_plot$sim))) {
 
 isds_overlaps_plot <- bind_rows(isds_overlaps)
 
+isds_overlaps_meansize <- isds_overlaps_plot %>% 
+  group_by(sim, censusyear) %>%
+  summarize(mean_wgt = mean(wgt)) %>%
+  ungroup() %>%
+  mutate(censusyear = paste0("year", censusyear)) %>%
+  tidyr::pivot_wider(id_cols = "sim", names_from = censusyear, values_from = mean_wgt) 
+
+ggplot(isds_overlaps_meansize, aes(year1994, year2004)) +
+  geom_point() +
+  geom_line(aes(year1994, year1994)) +
+  geom_point(data = filter(isds_overlaps_meansize, sim == "real"), color = "green")
+
 isds_overlaps_res <- isds_overlaps_plot %>%
   select(sim, overlap) %>%
   distinct()
